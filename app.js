@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
+
 const session = require("express-session");
 
 const config = require('./lib/config');
+const port = config.PORT;
+const host = config.HOST;
 const PgPersistence = require('./lib/pg-persistence');
 const catchError = require("./lib/catch-error");
 
@@ -126,4 +128,4 @@ app.use((err, req, res, next) => {
   res.status(404).send(err.message);
 });
 
-app.listen(PORT, () => console.log(`App listening on Port: ${PORT}`));
+app.listen(port, host, () => console.log(`App listening on Port: ${PORT}`));
