@@ -1,7 +1,7 @@
 CREATE TABLE users (
   id serial PRIMARY KEY,
-  username varchar(20) NOT NULL UNIQUE,
-  password varchar(20) NOT NULL
+  username text NOT NULL UNIQUE,
+  password text NOT NULL
 );
 
 CREATE TABLE portfolios (
