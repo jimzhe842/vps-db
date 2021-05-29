@@ -6,6 +6,7 @@ const session = require("express-session");
 const config = require('./lib/config');
 const port = config.PORT;
 const host = config.HOST;
+const isProduction = (process.NODE_ENV == "production");
 const PgPersistence = require('./lib/pg-persistence');
 const catchError = require("./lib/catch-error");
 
@@ -21,7 +22,7 @@ app.use(session({
     httpOnly: true,
     maxAge: 31 * 24 * 60 * 60 * 1000,
     path: "/",
-    secure: false
+    secure: isProduction
   },
   secret: config.SECRET,
   name: "jelk-cookie",
