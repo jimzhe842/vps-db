@@ -129,4 +129,4 @@ app.use((err, req, res, next) => {
   res.status(404).send(err.message);
 });
 
-app.listen(port, host, () => console.log(`App listening on Port: ${PORT}`));
+app.listen(port, host, () => console.log(`App listening on Port: ${port}`));
