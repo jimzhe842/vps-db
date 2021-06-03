@@ -20,6 +20,19 @@ block main
       fieldset.actions
         button Add
 
+    form(action=`/createwebhook` method="post")
+      fieldset.actions 
+      button Create Webhook 
+
+    h2 Webhooks 
+    ul 
+      if webhooks.length > 0
+        each webhook in webhooks 
+          h3 
+            a(href=`/payloads/${webhook.uuid}`)= webhook.uuid
+          h5 Creation date:
+            p= webhook.created_at 
+
     form(action=`/users/signout` method="post")
       fieldset.actions 
         button Logout

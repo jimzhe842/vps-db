@@ -9,11 +9,18 @@ const host = config.HOST;
 const isProduction = (process.NODE_ENV == "production");
 const PgPersistence = require('./lib/pg-persistence');
 const catchError = require("./lib/catch-error");
+const http = require('http');
+const server = http.createServer(app);
+const socketio = require("socket.io");
+const io = socketio(server, { cors: { origin: "*" }});
+
+
 
 app.set("views", "./views");
 app.set("view engine", "pug");
 
 app.use(express.static('public'));
+app.use(express.static('node_modules'));
 app.use(express.urlencoded({ extended: false }));
 
 app.set("trust proxy", 1);
@@ -55,6 +62,8 @@ app.get("/users/signin", (req, res) => {
   // res.locals.store.testQuery1();
   res.render("login");
 });
+
+
 
 app.post("/users/signin", 
   catchError(async (req, res, next) => {
@@ -105,6 +114,37 @@ app.post("/portfolios/:portfolioId/items",
   }
 ));
 
+app.post("/createwebhook",
+  requiresAuthentication,
+  catchError(async (req, res) => {
+    let created = await res.locals.store.createWebhook(1);
+    if (!created) throw new Error("Not found.");
+
+    res.redirect(`/home`);
+  })
+);
+
+app.get("/webhook/:webhookUuid",
+  catchError(async (req, res) => {
+    let webhookUuid = req.params.webhookUuid;
+    let result = await res.locals.store.loadWebhook(webhookUuid);
+
+    if (result.rowCount <= 0) throw new Error("Not found.");
+    let webhook = result.rows[0];
+    let payloads = webhook.payloads.Payloads;
+    if (!payloads) {
+      payloads = [];
+    }
+    payloads.push(req.headers);
+    let payloadsJsonb = JSON.stringify(webhook.payloads);
+    await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
+
+    io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
+    
+    res.status(200);
+  })
+);
+
 app.get("/", (req, res) => {
   // res.send("Hello world!");
   res.redirect("/home");
@@ -115,9 +155,27 @@ app.get("/home",
   requiresAuthentication,
   catchError(async (req, res) =>{
     let items = await res.locals.store.loadItems(1);
-    res.render("home", {items});
+    let webhooks = await res.locals.store.loadWebhooks(1);
+    webhooks = webhooks.rows;
+    res.render("home", {items, webhooks});
     // res.redirect("/");
 }));
+
+app.get("/payloads/:webhookUuid",
+  requiresAuthentication,
+  catchError(async (req, res) => {
+    let webhookUuid = req.params.webhookUuid;
+    let webhook = await res.locals.store.loadWebhook(webhookUuid);
+    if (webhook.rowCount <= 0) throw new Error("Not found.");
+
+    webhook = webhook.rows[0];
+    let payloads = webhook.payloads;
+    // console.log(webhook.payloads);
+    // let payloads = JSON.parse(webhook.payloads);
+    
+    res.render("payloads", {payloads, webhook});
+  })
+);
 
 app.get("/stocks", (req, res) => {
   let stocks = ["$ANVS", "$GME"];
@@ -129,4 +187,10 @@ app.use((err, req, res, next) => {
   res.status(404).send(err.message);
 });
 
-app.listen(port, host, () => console.log(`App listening on Port: ${port}`));
+server.listen(port, host, () => console.log(`App listening on Port: ${port}`));
+
+io.on("connection", (socket) => {
+  // socket.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
+  console.log("connected");
+  // socket.emit("newPayload", {uuid: "123", payload: {a: "doge"}});
+});

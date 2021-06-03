@@ -1,22 +1,24 @@
-extends layout 
+//- extends layout 
 
-block list
-  header 
-    h2 Portfolio items
-    ul 
-      each item in items
-        h3= item.title 
-        form.delete(action=`portfolios/1/items/${item.id}/destroy` method="post")
-          button delete 
+//- block list
+//-   header 
+//-     h2 Portfolio items
+//-     ul 
+//-       each item in items
+//-         h3= item.title 
+//-         form.delete(action=`portfolios/1/items/${item.id}/destroy` method="post")
+//-           button delete 
+//-     form(action=`/portfolios/1/items` method="post")
+//-       dl
+//-         dt
+//-           label(for="itemTitle") Enter a new item:
+//-         dd
+//-           input(type="text"
+//-                 name="itemTitle"
+//-                 placeholder="Something item"
+//-                 value=itemTitle)
+//-       fieldset.actions
+//-         button Add
 
-    form(action=`/portfolios/1/items` method="post")
-      dl
-        dt
-          label(for="itemTitle") Enter a new item:
-        dd
-          input(type="text"
-                name="itemTitle"
-                placeholder="Something item"
-                value=itemTitle)
-      fieldset.actions
-        button Add
+    
+      

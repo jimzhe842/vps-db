@@ -21,3 +21,14 @@ CREATE TABLE items (
     REFERENCES portfolios (id)
     ON DELETE CASCADE
 );
+
+CREATE TABLE webhooks (
+  id serial PRIMARY KEY,
+  uuid text NOT NULL,
+  created_at date NOT NULL,
+  payloads jsonb,
+  user_id integer
+    NOT NULL
+    REFERENCES users (id)
+    ON DELETE CASCADE
+);
