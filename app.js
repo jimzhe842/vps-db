@@ -157,12 +157,12 @@ app.post("/webhook/:webhookUuid",
     if (!payloads) {
       payloads = [];
     }
-    payloads.push(req.body.payload);
+    payloads.push(JSON.parse(req.body.payload));
     console.log("space space space space space space space space space space space space space space space space space space");
-    console.log(req.body.payload);
+    console.log(JSON.parse(req.body.payload));
     console.log("space space space space space space space space space space space space space space space space space space");
     console.log(req.body.payload.toString());
-    console.log("space space space space space space space space space space space space space space space space space space");
+    console.log("space space space space space space space space space space space space space space space space space space");x
     let payloadsJsonb = JSON.stringify(webhook.payloads);
     console.log(payloadsJsonb);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
