@@ -162,7 +162,7 @@ app.post("/webhook/:webhookUuid",
     console.log(JSON.parse(req.body.payload));
     console.log("space space space space space space space space space space space space space space space space space space");
     console.log(req.body.payload.toString());
-    console.log("space space space space space space space space space space space space space space space space space space");x
+    console.log("space space space space space space space space space space space space space space space space space space");
     let payloadsJsonb = JSON.stringify(webhook.payloads);
     console.log(payloadsJsonb);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
