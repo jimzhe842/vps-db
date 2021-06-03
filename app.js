@@ -158,6 +158,7 @@ app.post("/webhook/:webhookUuid",
       payloads = [];
     }
     payloads.push(req.body.payload);
+    console.log(req.body.payload);
     let payloadsJsonb = JSON.stringify(webhook.payloads);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
 
