@@ -136,7 +136,7 @@ app.get("/webhook/:webhookUuid",
       payloads = [];
     }
     payloads.push(req.headers);
-    let payloadsJsonb = JSON.stringify(req.headers);
+    let payloadsJsonb = JSON.stringify(webhook.payloads);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
 
     io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
@@ -157,8 +157,8 @@ app.post("/webhook/:webhookUuid",
     if (!payloads) {
       payloads = [];
     }
-    payloads.push(req.body.payload.toString());
-    let payloadsJsonb = JSON.stringify(req.headers);
+    payloads.push(req.body.payload);
+    let payloadsJsonb = JSON.stringify(webhook.payloads);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
 
     io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
