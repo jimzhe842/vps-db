@@ -24,6 +24,7 @@ ul h5 {
   color: green;
   font-size: 1.4rem;
   padding: 5px;
+  text-decoration: underline;
 }
 
 ol {
