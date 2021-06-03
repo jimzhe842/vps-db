@@ -142,6 +142,29 @@ app.get("/webhook/:webhookUuid",
     io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
     
     res.status(200);
+    res.send("Webhook received!");
+  })
+);
+
+app.post("/webhook/:webhookUuid",
+  catchError(async (req, res) => {
+    let webhookUuid = req.params.webhookUuid;
+    let result = await res.locals.store.loadWebhook(webhookUuid);
+
+    if (result.rowCount <= 0) throw new Error("Not found.");
+    let webhook = result.rows[0];
+    let payloads = webhook.payloads.Payloads;
+    if (!payloads) {
+      payloads = [];
+    }
+    payloads.push(req.body.payload.toString());
+    let payloadsJsonb = JSON.stringify(webhook.payloads);
+    await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
+
+    io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
+    
+    res.status(200);
+    res.send("Webhook received!");
   })
 );
 
