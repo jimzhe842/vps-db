@@ -157,7 +157,7 @@ app.post("/webhook/:webhookUuid",
     if (!payloads) {
       payloads = [];
     }
-    payloads.push(JSON.parse(req.body.payload));
+    payloads.unshift(JSON.parse(req.body.payload));
     let payloadsJsonb = JSON.stringify(webhook.payloads);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
 
