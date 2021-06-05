@@ -9,8 +9,11 @@ block main
   
   if payloads.Payloads.length > 0
     ol(id="payloads-list")
-      each payload in payloads.Payloads 
+      each payload, index in payloads.Payloads 
         li
+          form(action=`/deletepayload/${webhook.uuid}/${index}`, method="post")
+            fieldset.actions 
+              button Delete
           ul
             each val, key in payload
               li

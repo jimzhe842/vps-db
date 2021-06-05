@@ -158,13 +158,7 @@ app.post("/webhook/:webhookUuid",
       payloads = [];
     }
     payloads.push(JSON.parse(req.body.payload));
-    console.log("space space space space space space space space space space space space space space space space space space");
-    console.log(JSON.parse(req.body.payload));
-    console.log("space space space space space space space space space space space space space space space space space space");
-    console.log(req.body.payload.toString());
-    console.log("space space space space space space space space space space space space space space space space space space");
     let payloadsJsonb = JSON.stringify(webhook.payloads);
-    console.log(payloadsJsonb);
     await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
 
     io.emit("newPayload", {uuid: webhook.uuid, payload: req.headers});
@@ -203,6 +197,30 @@ app.get("/payloads/:webhookUuid",
     // let payloads = JSON.parse(webhook.payloads);
     
     res.render("payloads", {payloads, webhook});
+  })
+);
+
+app.post("/deletepayload/:webhookUuid/:index",
+  requiresAuthentication,
+  catchError(async (req, res) => {
+    let webhookUuid = req.params.webhookUuid;
+    let index = +req.params.index;
+
+    let webhook = await res.locals.store.loadWebhook(webhookUuid);
+    if (webhook.rowCount <= 0) throw new Error("Not found.");
+
+    webhook = webhook.rows[0];
+    let payloads = webhook.payloads;
+    let payloadsVal = payloads.Payloads;
+    if (payloadsVal.length == 0) {
+      throw new Error("Not found.");
+    }
+    payloadsVal.splice(index, 1);
+
+    let payloadsJsonb = JSON.stringify(webhook.payloads);
+    await res.locals.store.updatePayloads(webhookUuid, payloadsJsonb);
+    res.render("payloads", {payloads, webhook});
+
   })
 );
 
