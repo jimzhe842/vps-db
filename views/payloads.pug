@@ -1,22 +1,22 @@
 extends layout 
 
 block main 
-  h1 Payload 
+  h1.payloads Webhook UUID:
   h3(id="uuid")= webhook.uuid 
-  h5= webhook.created_at 
-
-  h3 Payloads
+  h5.webhook-date= webhook.created_at 
+  h1.payloads-label Payloads
   
   if payloads.Payloads.length > 0
     ol(id="payloads-list")
       each payload, index in payloads.Payloads 
-        li
+        li.outer
+          h5.payload-title="Payload "+(index+1)
           form(action=`/deletepayload/${webhook.uuid}/${index}`, method="post")
             fieldset.actions 
-              button Delete
+              button.danger Delete
           ul
             each val, key in payload
-              li
+              li.inner
                 h5= key
                 p= val
   else 

@@ -4,11 +4,11 @@ block main
     h1 Your portfolio
     ul 
       each item in items
-        h3= item.title 
-        form.delete(action=`portfolios/1/items/${item.id}/destroy` method="post")
-          button delete 
-
-    form(action=`/portfolios/1/items` method="post")
+        li
+          h3= item.title 
+          form.delete(action=`portfolios/1/items/${item.id}/destroy` method="post")
+            button.danger delete 
+    form.add-item(action=`/portfolios/1/items` method="post")
       dl
         dt
           label(for="itemTitle") Enter a new item:
@@ -17,22 +17,22 @@ block main
                 name="itemTitle"
                 placeholder="Something item"
                 value=itemTitle)
-      fieldset.actions
-        button Add
-
-    form(action=`/createwebhook` method="post")
+          button.primary(type="submit") Add
+    
+    h2.webhook Webhooks
+    form.create-webhook(action=`/createwebhook` method="post")
       fieldset.actions 
-      button Create Webhook 
+        button.primary Create Webhook 
 
-    h2 Webhooks 
+     
     ul 
       if webhooks.length > 0
         each webhook in webhooks 
-          h3 
+          h3.webhook-title 
             a(href=`/payloads/${webhook.uuid}`)= webhook.uuid
-          h5 Creation date:
+          h5.webhook-creation-date Creation date:
             p= webhook.created_at 
 
     form(action=`/users/signout` method="post")
       fieldset.actions 
-        button Logout
+        button.danger Logout
